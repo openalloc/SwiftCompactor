@@ -20,28 +20,13 @@ import Foundation
 
 public class NumberCompactor: NumberFormatter {
     
-    public let blankIfZero: Bool
-    public let roundSmallToWhole: Bool
-    
-    let threshold: Double
-    let netKiloExtent: Double
-    let netMegaExtent: Double
-    let netGigaExtent: Double
-    let netTeraExtent: Double
-    let netPetaExtent: Double
-    let netExaExtent: Double
+    public var blankIfZero: Bool
+    public var roundSmallToWhole: Bool
     
     public init(blankIfZero: Bool = false,
                 roundSmallToWhole: Bool = false) {
         self.blankIfZero = blankIfZero
         self.roundSmallToWhole = roundSmallToWhole
-        self.threshold = roundSmallToWhole ? 0.5 : 0.05
-        self.netKiloExtent = Scale.kilo.extent - threshold
-        self.netMegaExtent = Scale.mega.extent - threshold * Scale.kilo.extent
-        self.netGigaExtent = Scale.giga.extent - threshold * Scale.mega.extent
-        self.netTeraExtent = Scale.tera.extent - threshold * Scale.giga.extent
-        self.netPetaExtent = Scale.peta.extent - threshold * Scale.tera.extent
-        self.netExaExtent = Scale.exa.extent - threshold * Scale.peta.extent
         super.init()
     }
     
@@ -50,59 +35,88 @@ public class NumberCompactor: NumberFormatter {
     }
     
     public override func string(from value: NSNumber) -> String? {
-        let absValue = abs(Double(truncating: value))
+        let rawValue: Double = Double(truncating: value)
+        let absValue = abs(rawValue)
+        let threshold = NumberCompactor.getThreshold(roundSmallToWhole)
         
         if blankIfZero, absValue <= threshold { return "" }
+                
+        let (scaledValue, scaleSymbol) = NumberCompactor.getScaledValue(rawValue, roundSmallToWhole)
         
-        var netValue = Double(truncating: value)
-        var scaleSymbol: Scale = .none
+        let showWholeValue: Bool = {
+            let smallValueThreshold = 100 - threshold
+            if smallValueThreshold <= abs(scaledValue) { return true }
+            let isSmallAbsValue = absValue < smallValueThreshold
+            return isSmallAbsValue && roundSmallToWhole
+        }()
         
-        switch absValue {
-        case 0.0 ... threshold:
-            // if inside threshold, drop the fraction, to avoid awkward "-$0"
-            netValue = 0.0
-        case threshold ..< netKiloExtent:
-            _ = 0 // verbatim netValue
-        case netKiloExtent ..< netMegaExtent:
-            netValue /= Scale.kilo.extent
-            scaleSymbol = .kilo
-        case netMegaExtent ..< netGigaExtent:
-            netValue /= Scale.mega.extent
-            scaleSymbol = .mega
-        case netGigaExtent ..< netTeraExtent:
-            netValue /= Scale.giga.extent
-            scaleSymbol = .giga
-        case netTeraExtent ..< netPetaExtent:
-            netValue /= Scale.tera.extent
-            scaleSymbol = .tera
-        case netPetaExtent ..< netExaExtent:
-            netValue /= Scale.peta.extent
-            scaleSymbol = .peta
-        default:
-            netValue /= Scale.exa.extent
-            scaleSymbol = .exa
-        }
-        
-        let smallValueThreshold = 100 - threshold
-        let isSmallAbsValue = absValue < smallValueThreshold
-        let isLargeNetValue = smallValueThreshold <= abs(netValue)
-        let roundToWhole = isSmallAbsValue && roundSmallToWhole
-        let fractionDigitCount = roundToWhole || isLargeNetValue ? 0 : 1
-        
+        let fractionDigitCount = showWholeValue ? 0 : 1
         self.maximumFractionDigits = fractionDigitCount
         self.minimumFractionDigits = fractionDigitCount
-        self.usesGroupingSeparator = false
         
-        guard let raw = super.string(from: netValue as NSNumber) else { return nil }
-        
-        guard let lastDigitIndex = raw.lastIndex(where: { $0.isNumber }) else { return nil }
+        guard let raw = super.string(from: scaledValue as NSNumber),
+              let lastDigitIndex = raw.lastIndex(where: { $0.isNumber })
+        else { return nil }
         
         let afterLastDigitIndex = raw.index(after: lastDigitIndex)
-        
         let prefix = raw.prefix(upTo: afterLastDigitIndex)
         let suffix = raw.suffix(from: afterLastDigitIndex)
         
         return "\(prefix)\(scaleSymbol.abbreviation)\(suffix)"
+    }
+}
+
+extension NumberCompactor {
+    
+    private typealias LOOKUP = (range: Range<Double>, divisor: Double, scale: Scale)
+    
+    // thresholds
+    private static let halfDollar: Double = 0.5
+    private static let nickel: Double = 0.05
+
+    // cached lookup tables
+    private static let halfDollarLookup: [LOOKUP] = NumberCompactor.generateLookup(threshold: halfDollar)
+    private static let nickelLookup: [LOOKUP] = NumberCompactor.generateLookup(threshold: nickel)
+
+    static func getThreshold(_ roundSmallToWhole: Bool) -> Double {
+        roundSmallToWhole ? NumberCompactor.halfDollar : NumberCompactor.nickel
+    }
+    
+    static func getScaledValue(_ rawValue: Double, _ roundSmallToWhole: Bool) -> (Double, Scale) {
+        let threshold = getThreshold(roundSmallToWhole)
+        let absValue = abs(rawValue)
+        if !(0.0...threshold).contains(absValue) {
+            if let (divisor, scale) = NumberCompactor.lookup(roundSmallToWhole, absValue) {
+                let netValue = rawValue / divisor
+                return (netValue, scale)
+            }
+        }
+        return (0.0, .none)
+    }
+    
+    private static func lookup(_ roundSmallToWhole: Bool, _ absValue: Double) -> (divisor: Double, scale: Scale)? {
+        let records = roundSmallToWhole ? NumberCompactor.halfDollarLookup : NumberCompactor.nickelLookup
+        guard let record = records.first(where: { $0.range.contains(absValue) }) else { return nil }
+        return (record.divisor, record.scale)
+    }
+    
+    private static func generateLookup(threshold: Double) -> [LOOKUP] {
+        let netKiloExtent: Double = Scale.kilo.extent - threshold
+        let netMegaExtent: Double = Scale.mega.extent - threshold * Scale.kilo.extent
+        let netGigaExtent: Double = Scale.giga.extent - threshold * Scale.mega.extent
+        let netTeraExtent: Double = Scale.tera.extent - threshold * Scale.giga.extent
+        let netPetaExtent: Double = Scale.peta.extent - threshold * Scale.tera.extent
+        let netExaExtent : Double = Scale.exa.extent  - threshold * Scale.peta.extent
+        
+        return [
+            (threshold ..< netKiloExtent, 1.0, .none),
+            (netKiloExtent ..< netMegaExtent, Scale.kilo.extent, .kilo),
+            (netMegaExtent ..< netGigaExtent, Scale.mega.extent, .mega),
+            (netGigaExtent ..< netTeraExtent, Scale.giga.extent, .giga),
+            (netTeraExtent ..< netPetaExtent, Scale.tera.extent, .tera),
+            (netPetaExtent ..< netExaExtent, Scale.peta.extent, .peta),
+            (netExaExtent  ..< Double.greatestFiniteMagnitude, Scale.exa.extent, .exa),
+        ]
     }
 }
 

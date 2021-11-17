@@ -39,7 +39,8 @@ class NumberCompactorTests: XCTestCase {
     }
     
     func testWholeNumber() {
-        let c = NumberCompactor(blankIfZero: false, roundSmallToWhole: true)
+        let c = NumberCompactor()
+        c.roundSmallToWhole = true
         
         XCTAssertEqual("8", c.string(from: 8))
         XCTAssertEqual("-8", c.string(from: -8))
@@ -56,6 +57,8 @@ class NumberCompactorTests: XCTestCase {
         XCTAssertEqual("100", c.string(from: 99.50))
         XCTAssertEqual("-100", c.string(from: -99.50))
 
+        XCTAssertEqual("999", c.string(from: 999))
+        
         XCTAssertEqual("999", c.string(from: 999.49))
         XCTAssertEqual("-999", c.string(from: -999.49))
         
