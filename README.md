@@ -33,7 +33,7 @@ By default, values will show up to one fractional decimal point of the value, ro
 |   P    | peta (quadrillion)  | 1000^5 |
 |   E    | exa (quintillion)   | 1000^6 |
 
-For more detail see the [Binary Prefix](https://en.wikipedia.org/wiki/Binary_prefix) at page at Wikipedia.
+For more detail see the [Binary Prefix](https://en.wikipedia.org/wiki/Binary_prefix) page at Wikipedia.
 
 ## CurrencyCompactor
 
