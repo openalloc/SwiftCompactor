@@ -14,7 +14,7 @@ _Compactor_ is part of the [OpenAlloc](https://github.com/openalloc) family of o
 let c = NumberCompactor()
 print(c.string(from: 1_234_567))
 
-=> 1.2M
+=> "1.2M"
 ```
 
 By default, values will show up to one fractional decimal point of the value, rounded if necessary.
@@ -43,7 +43,7 @@ For more detail see the [Binary Prefix](https://en.wikipedia.org/wiki/Binary_pre
 let c = CurrencyCompactor()
 print(c.string(from: 1_234_567))
 
-=> $1.2M
+=> "$1.2M"
 ```
 
 By default, values within `-100...100` will have no fractional part, and are rounded where necessary. Outside that one fractional decimal point of the value is shown, rounded if necessary.
@@ -62,10 +62,15 @@ The same as used with `NumberCompactor()`.
 ## TimeCompactor
 
 ```swift
-let c = TimeCompactor(style: .full)
+let c = TimeCompactor()
 print(c.string(from: 1_234_567))
 
-=> 14.3 days
+=> "14.3d"
+
+let f = TimeCompactor(style: .full)
+print(f.string(from: 1_234_567))
+
+=> "14.3 days"
 ```
 
 By default, values will show up to one fractional decimal point of the value, rounded if necessary.
