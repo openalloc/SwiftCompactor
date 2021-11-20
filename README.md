@@ -6,7 +6,7 @@ Available as an open source Swift library to be incorporated in other apps.
 
 _Compactor_ is part of the [OpenAlloc](https://github.com/openalloc) family of open source Swift software tools.
 
-<img src=”https://github.com/openalloc/SwiftCompactor/blob/main/Images/examples.png” width=”800” height=”305”/>
+<img src="https://github.com/openalloc/SwiftCompactor/blob/main/Images/examples.png" width="800" height="305"/>
 
 ## NumberCompactor
 
