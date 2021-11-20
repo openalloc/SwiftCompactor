@@ -2,7 +2,7 @@
 
 Formatters for the concise display of Numbers, Currency, and Time Intervals
 
-Use where precison isn’t critical, but space is at a premium. Compact values like `$8.6M` are more easily grasped over values like `$8,603,842.35`, lowering the cognitive load for the user.
+Why _SwiftCompactor_? First, use where precision isn’t critical, but space is at a premium. Second, compact values like `$8.6M` are more easily grasped over values like `$8,603,842.35`, lowering the cognitive load for the user.
 
 Available as an open source Swift library to be incorporated in other apps.
 
