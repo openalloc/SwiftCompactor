@@ -6,21 +6,23 @@ Available as an open source Swift library to be incorporated in other apps.
 
 _Compactor_ is part of the [OpenAlloc](https://github.com/openalloc) family of open source Swift software tools.
 
+<img src=”https://github.com/openalloc/SwiftCompactor/blob/main/Images/examples.png” width=”800” height=”305”/>
+
 ## NumberCompactor
 
 ```swift
 let c = NumberCompactor()
 print(c.string(from: 1_234_567))
 
-=> "1.2M"
+=> 1.2M
 ```
 
 By default, values will show up to one fractional decimal point of the value, rounded if necessary.
 
 ### Options
 
-* `blankIfZero` (default: false) - if true, a value of zero will return ""
-* `roundSmallToWhole` (default: false) - if true, fractional parts excluded from values within -100...100
+* `blankIfZero` (default: `false`) - if true, a value of zero will return “”
+* `roundSmallToWhole` (default: `false`) - if true, fractional parts excluded from values within `-100...100`
 
 ### Suffixes
 
@@ -41,17 +43,17 @@ For more detail see the [Binary Prefix](https://en.wikipedia.org/wiki/Binary_pre
 let c = CurrencyCompactor()
 print(c.string(from: 1_234_567))
 
-=> "$1.2M"
+=> $1.2M
 ```
 
-By default, values within -100...100 will have no fractional part, and are rounded where necessary. Outside that one fractional decimal point of the value is shown, rounded if necessary.
+By default, values within `-100...100` will have no fractional part, and are rounded where necessary. Outside that one fractional decimal point of the value is shown, rounded if necessary.
 
 ### Options
 
-* `blankIfZero` (default: false) - if true, a value of zero will return ""
-* `roundSmallToWhole` (default: true) - if true, fractional parts excluded from values within -100...100
+* `blankIfZero` (default: `false`) - if true, a value of zero will return “”
+* `roundSmallToWhole` (default: `true`) - if true, fractional parts excluded from values within `-100...100`
 
-Note that `roundSmallToWhole` is true by default, because `$1.1` looks awkward when we're accustomed to fractions in pennies.
+Note that `roundSmallToWhole` is true by default, because `$1.1` looks awkward when we’re accustomed to fractions in pennies.
 
 ### Suffixes
 
@@ -63,16 +65,16 @@ The same as used with `NumberCompactor()`.
 let c = TimeCompactor(style: .full)
 print(c.string(from: 1_234_567))
 
-=> "14.3 days"
+=> 14.3 days
 ```
 
 By default, values will show up to one fractional decimal point of the value, rounded if necessary.
 
 ### Options
 
-* `blankIfZero` (default: false) - if true, a value of zero will return ""
+* `blankIfZero` (default: `false`) - if true, a value of zero will return “”
 * `style` (default: `.short`) - the style of suffix used
-* `roundSmallToWhole` (default: false) - if true, fractional parts excluded from values within -100...100
+* `roundSmallToWhole` (default: `false`) - if true, fractional parts excluded from values within `-100...100`
 
 ### Suffixes
 
@@ -95,7 +97,7 @@ Swift open-source libraries (by the same author):
 * [AllocData](https://github.com/openalloc/AllocData) - standardized data formats for investing-focused apps and tools
 * [FINporter](https://github.com/openalloc/FINporter) - library and command-line tool to transform various specialized finance-related formats to the standardized schema of AllocData
 * [SwiftModifiedDietz](https://github.com/openalloc/SwiftModifiedDietz) - A tool for calculating portfolio performance using the Modified Dietz method
-* [SwiftNiceScale](https://github.com/openalloc/SwiftNiceScale) - generate 'nice' numbers for label ticks over a range, such as for y-axis on a chart
+* [SwiftNiceScale](https://github.com/openalloc/SwiftNiceScale) - generate ‘nice’ numbers for label ticks over a range, such as for y-axis on a chart
 * [SwiftRegressor](https://github.com/openalloc/SwiftRegressor) - a linear regression tool that’s flexible and easy to use
 * [SwiftSimpleTree](https://github.com/openalloc/SwiftSimpleTree) - a nested data structure that’s flexible and easy to use
 
@@ -108,11 +110,11 @@ And commercial apps using this library (by the same author):
 
 Copyright 2021 FlowAllocator LLC
 
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the “License”); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
 [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an “AS IS” BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
 ## Contributing
 
