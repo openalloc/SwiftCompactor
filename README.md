@@ -63,6 +63,8 @@ The same as used with `NumberCompactor()`.
 
 ## TimeCompactor
 
+With `TimeCompactor()` you provide it a `TimeInterval` value to be transformed into a string value.
+
 ```swift
 let c = TimeCompactor()
 print(c.string(from: 1_234_567))
