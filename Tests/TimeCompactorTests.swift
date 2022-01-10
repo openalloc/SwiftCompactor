@@ -23,7 +23,7 @@ import XCTest
 class TimeCompactorTests: XCTestCase {
     
     func testBlankIfZero() {
-        let c = TimeCompactor(blankIfZero: true, style: .short)
+        let c = TimeCompactor(ifZero: "", style: .short)
 
         XCTAssertEqual("", c.string(from: 0.049))
         XCTAssertEqual("", c.string(from: -0.049))
@@ -48,7 +48,7 @@ class TimeCompactorTests: XCTestCase {
     }
     
     func testWholeNumberFull() {
-        let c = TimeCompactor(blankIfZero: false, style: .full, roundSmallToWhole: true)
+        let c = TimeCompactor(ifZero: nil, style: .full, roundSmallToWhole: true)
         
         XCTAssertEqual("59 seconds", c.string(from: 59))
         XCTAssertEqual("59 seconds", c.string(from: 59.499))
@@ -71,7 +71,7 @@ class TimeCompactorTests: XCTestCase {
     }
     
     func testWholeNumberShort() {
-        let c = TimeCompactor(blankIfZero: false, style: .short, roundSmallToWhole: true)
+        let c = TimeCompactor(ifZero: nil, style: .short, roundSmallToWhole: true)
         
         XCTAssertEqual("59s", c.string(from: 59))
         XCTAssertEqual("59s", c.string(from: 59.499))
@@ -94,7 +94,7 @@ class TimeCompactorTests: XCTestCase {
     }
     
     func testPluralFull() {
-        let c = TimeCompactor(blankIfZero: false, style: .full)
+        let c = TimeCompactor(ifZero: nil, style: .full)
         
         XCTAssertEqual("1.0 seconds", c.string(from: 1))
         XCTAssertEqual("1.1 seconds", c.string(from: 1.09))
@@ -112,14 +112,14 @@ class TimeCompactorTests: XCTestCase {
     }
     
     func testCompactDropTrailingDotZero() {
-        let c = TimeCompactor(blankIfZero: false, style: .short)
+        let c = TimeCompactor(ifZero: nil, style: .short)
 
         XCTAssertEqual("12.0s", c.string(from: 12.049))
         XCTAssertEqual("-12.0s", c.string(from: -12.050))
     }
 
     func testShort() {
-        let c = TimeCompactor(blankIfZero: false, style: .short)
+        let c = TimeCompactor(ifZero: nil, style: .short)
 
         XCTAssertEqual("-3818ky", c.string(from: -120_500_000_000_000))
         XCTAssertEqual("-3.8ky", c.string(from: -120_500_000_000))
@@ -168,7 +168,7 @@ class TimeCompactorTests: XCTestCase {
     }
 
     func testFull() {
-        let c = TimeCompactor(blankIfZero: false, style: .full)
+        let c = TimeCompactor(ifZero: nil, style: .full)
         
         XCTAssertEqual("-3818 millenia", c.string(from: -120_500_000_000_000))
         XCTAssertEqual("-3.8 millenia", c.string(from: -120_500_000_000))
@@ -217,7 +217,7 @@ class TimeCompactorTests: XCTestCase {
     }
 
     func testCompactEU() {
-        let c = TimeCompactor(blankIfZero: false, style: .short)
+        let c = TimeCompactor(ifZero: nil, style: .short)
         c.decimalSeparator = ","
 
         XCTAssertEqual("3,3h", c.string(from: 12050))

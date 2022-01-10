@@ -20,12 +20,20 @@ import Foundation
 
 public class NumberCompactor: NumberFormatter {
     
-    public var blankIfZero: Bool
+    public var ifZero: String?
     public var roundSmallToWhole: Bool
     
-    public init(blankIfZero: Bool = false,
+    @available(*, deprecated, message: "use init(ifZero: String?, roundSmallToWhole: Bool) instead")
+    public convenience init(blankIfZero: Bool = false,
+                            roundSmallToWhole: Bool = false) {
+        self.init(ifZero: blankIfZero ? "" : nil,
+                  roundSmallToWhole: roundSmallToWhole)
+    }
+    
+    public init(ifZero: String? = nil,
                 roundSmallToWhole: Bool = false) {
-        self.blankIfZero = blankIfZero
+        
+        self.ifZero = ifZero
         self.roundSmallToWhole = roundSmallToWhole
         super.init()
     }
@@ -39,7 +47,7 @@ public class NumberCompactor: NumberFormatter {
         let absValue = abs(rawValue)
         let threshold = NumberCompactor.getThreshold(roundSmallToWhole)
         
-        if blankIfZero, absValue <= threshold { return "" }
+        if ifZero != nil, absValue <= threshold { return ifZero! }
                 
         let (scaledValue, scaleSymbol) = NumberCompactor.getScaledValue(rawValue, roundSmallToWhole)
         

@@ -23,7 +23,7 @@ By default, values will show up to one fractional decimal point of the value, ro
 
 ### Options
 
-* `blankIfZero` (default: `false`) - if true, a value of zero will return “”
+* `ifZero` (default: `(String?)nil`) - if nil and value is zero, a zero value will be shown. If !nil and value is zero, the specified string value will be shown
 * `roundSmallToWhole` (default: `false`) - if true, fractional parts excluded from values within `-100...100`
 
 ### Suffixes
@@ -52,7 +52,7 @@ By default, values within `-100...100` will have no fractional part, and are rou
 
 ### Options
 
-* `blankIfZero` (default: `false`) - if true, a value of zero will return “”
+* `ifZero` (default: `(String?)nil`) - if nil and value is zero, a zero value will be shown. If !nil and value is zero, the specified string value will be shown
 * `roundSmallToWhole` (default: `true`) - if true, fractional parts excluded from values within `-100...100`
 
 Note that `roundSmallToWhole` is true by default, because `$1.1` looks awkward when we’re accustomed to fractions in pennies.
@@ -81,7 +81,7 @@ By default, values will show up to one fractional decimal point of the value, ro
 
 ### Options
 
-* `blankIfZero` (default: `false`) - if true, a value of zero will return “”
+* `ifZero` (default: `(String?)nil`) - if nil and value is zero, a zero value will be shown. If !nil and value is zero, the specified string value will be shown
 * `style` (default: `.short`) - the style of suffix used
 * `roundSmallToWhole` (default: `false`) - if true, fractional parts excluded from values within `-100...100`
 

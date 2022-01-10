@@ -23,7 +23,7 @@ import XCTest
 class CurrencyCompactorTests: XCTestCase {
 
     func testBlankIfZero() {
-        let c = CurrencyCompactor(blankIfZero: true)
+        let c = CurrencyCompactor(ifZero: "")
         c.currencyCode = "USD"
         c.decimalSeparator = "."
 
@@ -48,7 +48,7 @@ class CurrencyCompactorTests: XCTestCase {
     }
 
     func testCompactDropTrailingDotZero() {
-        let c = CurrencyCompactor(blankIfZero: false)
+        let c = CurrencyCompactor(ifZero: nil)
         c.currencyCode = "USD"
         c.decimalSeparator = "."
 
@@ -58,7 +58,7 @@ class CurrencyCompactorTests: XCTestCase {
     }
 
     func testCompactUS() {
-        let c = CurrencyCompactor(blankIfZero: false)
+        let c = CurrencyCompactor(ifZero: nil)
         c.currencyCode = "USD"
         
         XCTAssertEqual("-$121T", c.string(from: -120_500_000_000_000.01))
@@ -126,7 +126,7 @@ class CurrencyCompactorTests: XCTestCase {
 
     func testNormalEU() {
 
-        let c = CurrencyCompactor(blankIfZero: false)
+        let c = CurrencyCompactor(ifZero: nil)
         c.locale = Locale(identifier: "FR")
         c.currencyCode = "EUR"
         
@@ -139,7 +139,7 @@ class CurrencyCompactorTests: XCTestCase {
     }
 
     func testCompactEU() {
-        let c = CurrencyCompactor(blankIfZero: false)
+        let c = CurrencyCompactor(ifZero: nil)
         c.locale = Locale(identifier: "US")
         c.currencyCode = "EUR"
         c.currencyDecimalSeparator = ","

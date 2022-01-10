@@ -20,14 +20,24 @@ import Foundation
 
 public class TimeCompactor: NumberFormatter {
     
-    public var blankIfZero: Bool
+    public var ifZero: String?
     public var style: Style
     public var roundSmallToWhole: Bool
     
-    public init(blankIfZero: Bool = false,
+    @available(*, deprecated, message: "use init(ifZero: String?, style: Style, roundSmallToWhole: Bool) instead")
+    public convenience init(blankIfZero: Bool = false,
+                            style: Style = .short,
+                            roundSmallToWhole: Bool = false) {
+        self.init(ifZero: blankIfZero ? "" : nil,
+                  style: style,
+                  roundSmallToWhole: roundSmallToWhole)
+    }
+    
+    public init(ifZero: String? = nil,
                 style: Style = .short,
                 roundSmallToWhole: Bool = false) {
-        self.blankIfZero = blankIfZero
+        
+        self.ifZero = ifZero
         self.style = style
         self.roundSmallToWhole = roundSmallToWhole
         super.init()
@@ -42,7 +52,7 @@ public class TimeCompactor: NumberFormatter {
         let absValue = abs(rawValue)
         let threshold = TimeCompactor.getThreshold(roundSmallToWhole)
         
-        if blankIfZero, absValue <= threshold { return "" }
+        if ifZero != nil, absValue <= threshold { return ifZero! }
         
         let (scaledValue, scaleSymbol) = TimeCompactor.getScaledValue(rawValue, roundSmallToWhole)
                 

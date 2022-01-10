@@ -20,10 +20,17 @@ import Foundation
 
 public class CurrencyCompactor: NumberCompactor {
     
-    public override init(blankIfZero: Bool = false,
-                roundSmallToWhole: Bool = true) {
+    @available(*, deprecated, message: "use init(ifZero: String?, roundSmallToWhole: Bool) instead")
+    public convenience init(blankIfZero: Bool = false,
+                            roundSmallToWhole: Bool = true) {
+        self.init(ifZero: blankIfZero ? "" : nil,
+                  roundSmallToWhole: roundSmallToWhole)
+    }
+    
+    public override init(ifZero: String? = nil,
+                         roundSmallToWhole: Bool = true) {
         
-        super.init(blankIfZero: blankIfZero,
+        super.init(ifZero: ifZero,
                    roundSmallToWhole: roundSmallToWhole)
         
         self.numberStyle = .currency
