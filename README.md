@@ -87,17 +87,19 @@ By default, values will show up to one fractional decimal point of the value, ro
 
 ### Suffixes
 
-The suffix will depend on the style, of which there is currently `.short` (default) and `.full`.
+The suffix will depend on the style, of which there is currently `.short` (default), `.medium`, and `.full`.
 
-| short  | full                | value      |
-| ------ | ------------------- | ---------- |
-|   s    | second              | 1          |
-|   m    | minute              | 60         |
-|   h    | hour                | 3,600      |
-|   d    | day                 | 86,400     |
-|   y    | year                | d × 365.25 |
-|   c    | century             | y × 100    |
-|   ky   | millennium          | y × 1000   |
+| short  | medium | full                | value      |
+| ------ | ------ | ------------------- | ---------- |
+|   s    |  sec   | second              | 1          |
+|   m    |  min   | minute              | 60         |
+|   h    |  hr    | hour                | 3,600      |
+|   d    |  day   | day                 | 86,400     |
+|   y    |  yr    | year                | d × 365.25 |
+|   c    |  cent  | century             | y × 100    |
+|   ky   |  ky    | millennium          | y × 1000   |
+
+Note that `.medium` and `.full` include plural forms.
 
 ## See Also
 

@@ -47,6 +47,29 @@ class TimeCompactorTests: XCTestCase {
         XCTAssertEqual("-12.0s", c.string(from: -12.050))
     }
     
+    func testWholeNumberMedium() {
+        let c = TimeCompactor(ifZero: nil, style: .medium, roundSmallToWhole: true)
+        
+        XCTAssertEqual("59 secs", c.string(from: 59))
+        XCTAssertEqual("59 secs", c.string(from: 59.499))
+        XCTAssertEqual("1 min", c.string(from: 59.500))
+        XCTAssertEqual("1 min", c.string(from: 59.899))
+        XCTAssertEqual("1 min", c.string(from: 59.9))
+        XCTAssertEqual("1 min", c.string(from: 60))
+        XCTAssertEqual("1 min", c.string(from: 61))
+        XCTAssertEqual("1 min", c.string(from: 89.499))
+        XCTAssertEqual("1 min", c.string(from: 89.999))
+        XCTAssertEqual("2 mins", c.string(from: 90))
+
+        XCTAssertEqual("1 sec", c.string(from: 1))
+        XCTAssertEqual("1 sec", c.string(from: 1.49))
+        XCTAssertEqual("2 secs", c.string(from: 1.50))
+        
+        XCTAssertEqual("1 hr", c.string(from: 3600))
+        XCTAssertEqual("1 hr", c.string(from: 5399))  // <1.5 hours
+        XCTAssertEqual("2 hrs", c.string(from: 5400)) // 1.5 hours
+    }
+
     func testWholeNumberFull() {
         let c = TimeCompactor(ifZero: nil, style: .full, roundSmallToWhole: true)
         
@@ -93,6 +116,24 @@ class TimeCompactorTests: XCTestCase {
         XCTAssertEqual("2h", c.string(from: 5400)) // 1.5 hours
     }
     
+    func testPluralMedium() {
+        let c = TimeCompactor(ifZero: nil, style: .medium)
+        
+        XCTAssertEqual("1.0 secs", c.string(from: 1))
+        XCTAssertEqual("1.1 secs", c.string(from: 1.09))
+
+        XCTAssertEqual("59.0 secs", c.string(from: 59))
+        XCTAssertEqual("59.9 secs", c.string(from: 59.94))
+        XCTAssertEqual("1.0 mins", c.string(from: 59.95))
+        XCTAssertEqual("1.0 mins", c.string(from: 60))
+        XCTAssertEqual("1.0 mins", c.string(from: 61))
+        XCTAssertEqual("1.5 mins", c.string(from: 89))
+
+        XCTAssertEqual("1.0 hrs", c.string(from: 3600))
+        XCTAssertEqual("1.5 hrs", c.string(from: 5400))
+        XCTAssertEqual("2.0 hrs", c.string(from: 7200))
+    }
+
     func testPluralFull() {
         let c = TimeCompactor(ifZero: nil, style: .full)
         
@@ -165,6 +206,55 @@ class TimeCompactorTests: XCTestCase {
         XCTAssertEqual("3.8ky", c.string(from: 120_500_000_000))
 
         XCTAssertEqual("3818ky", c.string(from: 120_500_000_000_000))
+    }
+
+    func testMedium() {
+        let c = TimeCompactor(ifZero: nil, style: .medium)
+        
+        XCTAssertEqual("-3818 kys", c.string(from: -120_500_000_000_000))
+        XCTAssertEqual("-3.8 kys", c.string(from: -120_500_000_000))
+        XCTAssertEqual("-3.3 cents", c.string(from: -10_500_000_000))
+        XCTAssertEqual("-3.8 yrs", c.string(from: -120_500_000))
+        XCTAssertEqual("-1.4 days", c.string(from: -120_500))
+        XCTAssertEqual("-3.3 hrs", c.string(from: -12050))
+        XCTAssertEqual("-2.0 mins", c.string(from: -120.50))
+        XCTAssertEqual("-12.0 secs", c.string(from: -12.050))
+
+        XCTAssertEqual("-1.5 secs", c.string(from: -1.5))
+        XCTAssertEqual("-1.5 secs", c.string(from: -1.49))
+        XCTAssertEqual("-1.2 secs", c.string(from: -1.250))
+
+        XCTAssertEqual("-0.3 secs", c.string(from: -0.251))
+        XCTAssertEqual("-0.2 secs", c.string(from: -0.250))
+        XCTAssertEqual("-0.1 secs", c.string(from: -0.051))
+        XCTAssertEqual("0.0 secs", c.string(from: -0.050))
+        XCTAssertEqual("0.0 secs", c.string(from: 0.000))
+        XCTAssertEqual("0.0 secs", c.string(from: 0.050))
+        XCTAssertEqual("0.1 secs", c.string(from: 0.051))
+        XCTAssertEqual("0.2 secs", c.string(from: 0.250))
+        XCTAssertEqual("0.3 secs", c.string(from: 0.251))
+        XCTAssertEqual("0.5 secs", c.string(from: 0.499))
+        XCTAssertEqual("0.5 secs", c.string(from: 0.500))
+
+        XCTAssertEqual("0.5 secs", c.string(from: 0.501))
+        XCTAssertEqual("1.5 secs", c.string(from: 1.49))
+        XCTAssertEqual("1.5 secs", c.string(from: 1.5))
+
+        XCTAssertEqual("12.0 secs", c.string(from: 12.050))
+        XCTAssertEqual("12.1 secs", c.string(from: 12.051))
+
+        XCTAssertEqual("2.0 mins", c.string(from: 120.50))
+        XCTAssertEqual("2.0 mins", c.string(from: 120.51))
+
+        XCTAssertEqual("3.3 hrs", c.string(from: 12050))
+
+        XCTAssertEqual("1.4 days", c.string(from: 120_500))
+
+        XCTAssertEqual("3.8 yrs", c.string(from: 120_500_000))
+
+        XCTAssertEqual("3.8 kys", c.string(from: 120_500_000_000))
+
+        XCTAssertEqual("3818 kys", c.string(from: 120_500_000_000_000))
     }
 
     func testFull() {

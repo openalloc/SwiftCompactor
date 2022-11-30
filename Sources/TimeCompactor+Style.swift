@@ -20,7 +20,8 @@ import Foundation
 
 extension TimeCompactor {
     public enum Style {
-        case short
-        case full
+        case short          // s, m, h, ...
+        case medium         // sec, min, hr, ...
+        case full           // second(s), minute(s), hour(s), ...
     }
 }

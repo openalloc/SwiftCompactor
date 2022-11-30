@@ -76,10 +76,15 @@ public class TimeCompactor: NumberFormatter {
 
         switch style {
         case .short:
-            return "\(prefix)\(scaleSymbol.abbreviation)"
-        case .full:
-            let isPlural = prefix != "1"
-            let unit = isPlural ? scaleSymbol.plural : scaleSymbol.singular
+            return "\(prefix)\(scaleSymbol.shortAbbreviation)"
+        case .medium, .full:
+            let unit: String = {
+                if prefix != "1" {
+                    return style == .medium ? scaleSymbol.mediumPlural : scaleSymbol.fullPlural
+                } else {
+                    return style == .medium ? scaleSymbol.mediumSingular : scaleSymbol.fullSingular
+                }
+            }()
             return "\(prefix) \(unit)"
         }
     }

@@ -47,7 +47,8 @@ extension TimeCompactor {
             }
         }
         
-        var abbreviation: String {
+        // shortest possible, with no plural form
+        var shortAbbreviation: String {
             switch self {
             case .second:
                 return "s"
@@ -66,7 +67,46 @@ extension TimeCompactor {
             }
         }
                 
-        var singular: String {
+        // usually longer than short, at most 4-5 chars, and may require plural form
+        var mediumSingular: String {
+            switch self {
+            case .second:
+                return "sec"
+            case .minute:
+                return "min"
+            case .hour:
+                return "hr"
+            case .day:
+                return "day"
+            case .year:
+                return "yr"
+            case .century:
+                return "cent"
+            case .millenium:
+                return "ky"
+            }
+        }
+
+        var mediumPlural: String {
+            switch self {
+            case .second:
+                return "secs"
+            case .minute:
+                return "mins"
+            case .hour:
+                return "hrs"
+            case .day:
+                return "days"
+            case .year:
+                return "yrs"
+            case .century:
+                return "cents"
+            case .millenium:
+                return "kys"
+            }
+        }
+
+        var fullSingular: String {
             switch self {
             case .second:
                 return "second"
@@ -85,7 +125,7 @@ extension TimeCompactor {
             }
         }
         
-        var plural: String {
+        var fullPlural: String {
             switch self {
             case .second:
                 return "seconds"
