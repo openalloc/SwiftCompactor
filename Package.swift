@@ -22,7 +22,8 @@ let package = Package(
     products: [
         .library(
             name: "Compactor",
-            targets: ["Compactor"]),
+            targets: ["Compactor"]
+        ),
     ],
     dependencies: [
     ],

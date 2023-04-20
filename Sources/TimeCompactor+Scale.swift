@@ -18,8 +18,8 @@
 
 import Foundation
 
-extension TimeCompactor {
-    public enum Scale {
+public extension TimeCompactor {
+    enum Scale {
         case second
         case minute
         case hour
@@ -27,7 +27,7 @@ extension TimeCompactor {
         case year
         case century
         case millenium
-        
+
         var extent: TimeInterval {
             switch self {
             case .second:
@@ -37,7 +37,7 @@ extension TimeCompactor {
             case .hour:
                 return 60 * 60
             case .day:
-                return 86_400 // 24 * 60 * 60
+                return 86400 // 24 * 60 * 60
             case .year:
                 return 31_557_600 // 365.25 * 86400
             case .century:
@@ -46,7 +46,7 @@ extension TimeCompactor {
                 return 1000 * 31_557_600
             }
         }
-        
+
         // shortest possible, with no plural form
         var shortAbbreviation: String {
             switch self {
@@ -66,7 +66,7 @@ extension TimeCompactor {
                 return "ky"
             }
         }
-                
+
         // usually longer than short, at most 4-5 chars, and may require plural form
         var mediumSingular: String {
             switch self {
@@ -124,7 +124,7 @@ extension TimeCompactor {
                 return "millennium"
             }
         }
-        
+
         var fullPlural: String {
             switch self {
             case .second:

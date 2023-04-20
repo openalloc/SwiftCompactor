@@ -21,15 +21,14 @@ import XCTest
 @testable import Compactor
 
 class NumberCompactorTests: XCTestCase {
-
     func testExample() {
         let c = TimeCompactor(ifZero: nil, style: .full)
         XCTAssertEqual("14.3 days", c.string(from: 1_234_567))
     }
-    
+
     func testBlankIfZero() {
         let c = NumberCompactor(ifZero: "")
-        
+
         XCTAssertEqual("", c.string(from: 0))
         XCTAssertEqual("", c.string(from: 0.05))
         XCTAssertEqual("", c.string(from: -0.05))
@@ -37,14 +36,14 @@ class NumberCompactorTests: XCTestCase {
         XCTAssertEqual("0.1", c.string(from: 0.051))
         XCTAssertEqual("-0.1", c.string(from: -0.051))
     }
-    
+
     func testWholeNumber() {
         let c = NumberCompactor(ifZero: nil)
         c.roundSmallToWhole = true
-        
+
         XCTAssertEqual("8", c.string(from: 8))
         XCTAssertEqual("-8", c.string(from: -8))
-        
+
         XCTAssertEqual("10", c.string(from: 10))
         XCTAssertEqual("-10", c.string(from: -10))
 
@@ -58,10 +57,10 @@ class NumberCompactorTests: XCTestCase {
         XCTAssertEqual("-100", c.string(from: -99.50))
 
         XCTAssertEqual("999", c.string(from: 999))
-        
+
         XCTAssertEqual("999", c.string(from: 999.49))
         XCTAssertEqual("-999", c.string(from: -999.49))
-        
+
         XCTAssertEqual("1.0k", c.string(from: 999.50))
         XCTAssertEqual("-1.0k", c.string(from: -999.50))
 
@@ -73,10 +72,10 @@ class NumberCompactorTests: XCTestCase {
 
         XCTAssertEqual("1.0k", c.string(from: 1000))
         XCTAssertEqual("-1.0k", c.string(from: -1000))
-        
+
         XCTAssertEqual("999k", c.string(from: 999_000))
         XCTAssertEqual("-999k", c.string(from: -999_000))
-     
+
         XCTAssertEqual("999k", c.string(from: 999_499))
         XCTAssertEqual("-999k", c.string(from: -999_499))
 
@@ -86,7 +85,7 @@ class NumberCompactorTests: XCTestCase {
         XCTAssertEqual("1.0M", c.string(from: 999_999.50))
         XCTAssertEqual("-1.0M", c.string(from: -999_999.50))
     }
-    
+
     func testSmallValues() {
         let c = NumberCompactor(ifZero: nil)
 
@@ -102,7 +101,7 @@ class NumberCompactorTests: XCTestCase {
 
         XCTAssertEqual("0.1", c.string(from: 0.1))
         XCTAssertEqual("-0.1", c.string(from: -0.1))
-        
+
         XCTAssertEqual("1.1", c.string(from: 1.051))
         XCTAssertEqual("-1.1", c.string(from: -1.051))
 
@@ -112,43 +111,43 @@ class NumberCompactorTests: XCTestCase {
         XCTAssertEqual("10.1", c.string(from: 10.051))
         XCTAssertEqual("-10.1", c.string(from: -10.051))
     }
-    
+
     func testK() {
         let c = NumberCompactor(ifZero: nil)
 
-        XCTAssertEqual("1.0k", c.string(from: 1_000))
-        XCTAssertEqual("1.0k", c.string(from: 1_050.00000))
-        XCTAssertEqual("1.1k", c.string(from: 1_050.00001))
+        XCTAssertEqual("1.0k", c.string(from: 1000))
+        XCTAssertEqual("1.0k", c.string(from: 1050.00000))
+        XCTAssertEqual("1.1k", c.string(from: 1050.00001))
 
-        XCTAssertEqual("10.0k", c.string(from: 10_000))
-        XCTAssertEqual("10.0k", c.string(from: 10_000.00001))
-        XCTAssertEqual("10.0k", c.string(from: 10_050.00000))
-        XCTAssertEqual("10.1k", c.string(from: 10_050.00001))
+        XCTAssertEqual("10.0k", c.string(from: 10000))
+        XCTAssertEqual("10.0k", c.string(from: 10000.00001))
+        XCTAssertEqual("10.0k", c.string(from: 10050.00000))
+        XCTAssertEqual("10.1k", c.string(from: 10050.00001))
 
-        XCTAssertEqual("90.0k", c.string(from: 90_000))
-        XCTAssertEqual("99.0k", c.string(from: 99_000))
+        XCTAssertEqual("90.0k", c.string(from: 90000))
+        XCTAssertEqual("99.0k", c.string(from: 99000))
 
-        XCTAssertEqual("99.5k", c.string(from: 99_500))
-        XCTAssertEqual("99.5k", c.string(from: 99_549))
+        XCTAssertEqual("99.5k", c.string(from: 99500))
+        XCTAssertEqual("99.5k", c.string(from: 99549))
 
-        XCTAssertEqual("99.6k", c.string(from: 99_550))
+        XCTAssertEqual("99.6k", c.string(from: 99550))
 
-        XCTAssertEqual("99.9k", c.string(from: 99_900))
-        XCTAssertEqual("99.9k", c.string(from: 99_949.99999))
+        XCTAssertEqual("99.9k", c.string(from: 99900))
+        XCTAssertEqual("99.9k", c.string(from: 99949.99999))
 
-        XCTAssertEqual("100k", c.string(from: 99_950.00000))
-        XCTAssertEqual("100k", c.string(from: 99_999.50000))
-        XCTAssertEqual("100k", c.string(from: 99_999.50001))
+        XCTAssertEqual("100k", c.string(from: 99950.00000))
+        XCTAssertEqual("100k", c.string(from: 99999.50000))
+        XCTAssertEqual("100k", c.string(from: 99999.50001))
 
         XCTAssertEqual("100k", c.string(from: 100_000))
         XCTAssertEqual("100k", c.string(from: 100_000.00001))
         XCTAssertEqual("100k", c.string(from: 100_050.00000))
         XCTAssertEqual("100k", c.string(from: 100_050.00001))
-        
+
         XCTAssertEqual("100k", c.string(from: 100_500.00000))
         XCTAssertEqual("101k", c.string(from: 100_500.00001))
     }
-    
+
     func testM() {
         let c = NumberCompactor(ifZero: nil)
 
@@ -180,11 +179,11 @@ class NumberCompactorTests: XCTestCase {
         XCTAssertEqual("100M", c.string(from: 100_000_000.00001))
         XCTAssertEqual("100M", c.string(from: 100_050_000.00000))
         XCTAssertEqual("100M", c.string(from: 100_050_000.00001))
-        
+
         XCTAssertEqual("100M", c.string(from: 100_500_000.00000))
         XCTAssertEqual("101M", c.string(from: 100_500_000.00001))
     }
-    
+
     func testG() {
         let c = NumberCompactor(ifZero: nil)
         XCTAssertEqual("1.0G", c.string(from: 1_000_000_000))
@@ -192,7 +191,7 @@ class NumberCompactorTests: XCTestCase {
         XCTAssertEqual("1.0G", c.string(from: 1_050_000_000.000000))
         XCTAssertEqual("1.1G", c.string(from: 1_050_000_000.000001))
     }
-    
+
     func testT() {
         let c = NumberCompactor(ifZero: nil)
         XCTAssertEqual("1.0T", c.string(from: 1_000_000_000_000))
@@ -200,7 +199,7 @@ class NumberCompactorTests: XCTestCase {
         XCTAssertEqual("1.0T", c.string(from: 1_050_000_000_000.000))
         XCTAssertEqual("1.1T", c.string(from: 1_050_000_000_000.001))
     }
-    
+
     func testP() {
         let c = NumberCompactor(ifZero: nil)
         XCTAssertEqual("1.0P", c.string(from: 1_000_000_000_000_000))

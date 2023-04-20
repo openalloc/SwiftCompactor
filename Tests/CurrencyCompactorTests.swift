@@ -21,7 +21,6 @@ import XCTest
 @testable import Compactor
 
 class CurrencyCompactorTests: XCTestCase {
-
     func testBlankIfZero() {
         let c = CurrencyCompactor(ifZero: "")
         c.currencyCode = "USD"
@@ -60,7 +59,7 @@ class CurrencyCompactorTests: XCTestCase {
     func testCompactUS() {
         let c = CurrencyCompactor(ifZero: nil)
         c.currencyCode = "USD"
-        
+
         XCTAssertEqual("-$121T", c.string(from: -120_500_000_000_000.01))
         XCTAssertEqual("-$120T", c.string(from: -120_500_000_000_000.00))
 
@@ -125,17 +124,16 @@ class CurrencyCompactorTests: XCTestCase {
     }
 
     func testNormalEU() {
-
         let c = CurrencyCompactor(ifZero: nil)
         c.locale = Locale(identifier: "FR")
         c.currencyCode = "EUR"
-        
+
         XCTAssertEqual("-12,1k €", c.string(from: -12050.01))
 
         XCTAssertEqual("0 €", c.string(from: 0.2549))
         XCTAssertEqual("0 €", c.string(from: 0.2550))
 
-        XCTAssertEqual("121k €", c.string(from: 120500.01))
+        XCTAssertEqual("121k €", c.string(from: 120_500.01))
     }
 
     func testCompactEU() {
@@ -145,7 +143,7 @@ class CurrencyCompactorTests: XCTestCase {
         c.currencyDecimalSeparator = ","
 
         XCTAssertEqual("-€12,1k", c.string(from: -12050.01))
-        
+
         XCTAssertEqual("€0", c.string(from: 0.000))
         XCTAssertEqual("€0", c.string(from: 0.050))
         XCTAssertEqual("€0", c.string(from: 0.051))

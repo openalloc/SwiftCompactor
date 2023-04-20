@@ -19,54 +19,55 @@
 import Foundation
 
 public class TimeCompactor: NumberFormatter {
-    
     public var ifZero: String?
     public var style: Style
     public var roundSmallToWhole: Bool
-    
+
     @available(*, deprecated, message: "use init(ifZero: String?, style: Style, roundSmallToWhole: Bool) instead")
     public convenience init(blankIfZero: Bool = false,
                             style: Style = .short,
-                            roundSmallToWhole: Bool = false) {
+                            roundSmallToWhole: Bool = false)
+    {
         self.init(ifZero: blankIfZero ? "" : nil,
                   style: style,
                   roundSmallToWhole: roundSmallToWhole)
     }
-    
+
     public init(ifZero: String? = nil,
                 style: Style = .short,
-                roundSmallToWhole: Bool = false) {
-        
+                roundSmallToWhole: Bool = false)
+    {
         self.ifZero = ifZero
         self.style = style
         self.roundSmallToWhole = roundSmallToWhole
         super.init()
     }
-    
-    required init?(coder: NSCoder) {
+
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    public override func string(from value: NSNumber) -> String? {
-        let rawValue: Double = Double(truncating: value)
+
+    override public func string(from value: NSNumber) -> String? {
+        let rawValue = Double(truncating: value)
         let absValue = abs(rawValue)
         let threshold = TimeCompactor.getThreshold(roundSmallToWhole)
-        
+
         if ifZero != nil, absValue <= threshold { return ifZero! }
-        
+
         let (scaledValue, scaleSymbol) = TimeCompactor.getScaledValue(rawValue, roundSmallToWhole)
-                
+
         let showWholeValue: Bool = {
             let smallValueThreshold = 100 - threshold
             let isLargeNetValue = smallValueThreshold <= abs(scaledValue)
             let roundToWhole = !isLargeNetValue && roundSmallToWhole
             return roundToWhole || isLargeNetValue
         }()
-        
+
         let fractionDigitCount = showWholeValue ? 0 : 1
-        self.minimumFractionDigits = fractionDigitCount
-        self.maximumFractionDigits = fractionDigitCount
-        
+        minimumFractionDigits = fractionDigitCount
+        maximumFractionDigits = fractionDigitCount
+
         guard let raw = super.string(from: scaledValue as NSNumber),
               let lastDigitIndex = raw.lastIndex(where: { $0.isNumber })
         else { return nil }
@@ -92,7 +93,7 @@ public class TimeCompactor: NumberFormatter {
 
 extension TimeCompactor {
     private typealias LOOKUP = (range: Range<Double>, divisor: Double, scale: Scale)
-    
+
     // thresholds
     private static let halfDollar: Double = 0.5
     private static let nickel: Double = 0.05
@@ -104,11 +105,11 @@ extension TimeCompactor {
     static func getThreshold(_ roundSmallToWhole: Bool) -> Double {
         roundSmallToWhole ? TimeCompactor.halfDollar : TimeCompactor.nickel
     }
-    
+
     static func getScaledValue(_ rawValue: Double, _ roundSmallToWhole: Bool) -> (Double, Scale) {
         let threshold = getThreshold(roundSmallToWhole)
         let absValue = abs(rawValue)
-        if !(0.0...threshold).contains(absValue) {
+        if !(0.0 ... threshold).contains(absValue) {
             if let (divisor, scale) = TimeCompactor.lookup(roundSmallToWhole, absValue) {
                 let netValue = rawValue / divisor
                 return (netValue, scale)
@@ -116,21 +117,21 @@ extension TimeCompactor {
         }
         return (0.0, .second)
     }
-    
+
     private static func lookup(_ roundSmallToWhole: Bool, _ absValue: Double) -> (divisor: Double, scale: Scale)? {
         let records = roundSmallToWhole ? TimeCompactor.halfDollarLookup : TimeCompactor.nickelLookup
         guard let record = records.first(where: { $0.range.contains(absValue) }) else { return nil }
         return (record.divisor, record.scale)
     }
-    
+
     private static func generateLookup(threshold: Double) -> [LOOKUP] {
         let netMinuteExtent: Double = Scale.minute.extent - threshold
         let netHourExtent: Double = Scale.hour.extent - threshold * Scale.minute.extent
         let netDayExtent: Double = Scale.day.extent - threshold * Scale.hour.extent
         let netYearExtent: Double = Scale.year.extent - threshold * Scale.day.extent
         let netCenturyExtent: Double = Scale.century.extent - threshold * Scale.year.extent
-        let netMilleniumExtent : Double = Scale.millenium.extent  - threshold * Scale.century.extent
-        
+        let netMilleniumExtent: Double = Scale.millenium.extent - threshold * Scale.century.extent
+
         return [
             (threshold ..< netMinuteExtent, 1.0, .second),
             (netMinuteExtent ..< netHourExtent, Scale.minute.extent, .minute),
@@ -138,7 +139,7 @@ extension TimeCompactor {
             (netDayExtent ..< netYearExtent, Scale.day.extent, .day),
             (netYearExtent ..< netCenturyExtent, Scale.year.extent, .year),
             (netCenturyExtent ..< netMilleniumExtent, Scale.century.extent, .century),
-            (netMilleniumExtent  ..< Double.greatestFiniteMagnitude, Scale.millenium.extent, .millenium),
+            (netMilleniumExtent ..< Double.greatestFiniteMagnitude, Scale.millenium.extent, .millenium),
         ]
     }
 }

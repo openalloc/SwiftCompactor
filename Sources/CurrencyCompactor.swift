@@ -19,24 +19,25 @@
 import Foundation
 
 public class CurrencyCompactor: NumberCompactor {
-    
     @available(*, deprecated, message: "use init(ifZero: String?, roundSmallToWhole: Bool) instead")
     public convenience init(blankIfZero: Bool = false,
-                            roundSmallToWhole: Bool = true) {
+                            roundSmallToWhole: Bool = true)
+    {
         self.init(ifZero: blankIfZero ? "" : nil,
                   roundSmallToWhole: roundSmallToWhole)
     }
-    
-    public override init(ifZero: String? = nil,
-                         roundSmallToWhole: Bool = true) {
-        
+
+    override public init(ifZero: String? = nil,
+                         roundSmallToWhole: Bool = true)
+    {
         super.init(ifZero: ifZero,
                    roundSmallToWhole: roundSmallToWhole)
-        
-        self.numberStyle = .currency
+
+        numberStyle = .currency
     }
-    
-    required init?(coder: NSCoder) {
+
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

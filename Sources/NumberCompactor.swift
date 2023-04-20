@@ -19,65 +19,65 @@
 import Foundation
 
 public class NumberCompactor: NumberFormatter {
-    
     public var ifZero: String?
     public var roundSmallToWhole: Bool
-    
+
     @available(*, deprecated, message: "use init(ifZero: String?, roundSmallToWhole: Bool) instead")
     public convenience init(blankIfZero: Bool = false,
-                            roundSmallToWhole: Bool = false) {
+                            roundSmallToWhole: Bool = false)
+    {
         self.init(ifZero: blankIfZero ? "" : nil,
                   roundSmallToWhole: roundSmallToWhole)
     }
-    
+
     public init(ifZero: String? = nil,
-                roundSmallToWhole: Bool = false) {
-        
+                roundSmallToWhole: Bool = false)
+    {
         self.ifZero = ifZero
         self.roundSmallToWhole = roundSmallToWhole
         super.init()
     }
-    
-    required init?(coder: NSCoder) {
+
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    public override func string(from value: NSNumber) -> String? {
-        let rawValue: Double = Double(truncating: value)
+
+    override public func string(from value: NSNumber) -> String? {
+        let rawValue = Double(truncating: value)
         let absValue = abs(rawValue)
         let threshold = NumberCompactor.getThreshold(roundSmallToWhole)
-        
+
         if ifZero != nil, absValue <= threshold { return ifZero! }
-                
+
         let (scaledValue, scaleSymbol) = NumberCompactor.getScaledValue(rawValue, roundSmallToWhole)
-        
+
         let showWholeValue: Bool = {
             let smallValueThreshold = 100 - threshold
             if smallValueThreshold <= abs(scaledValue) { return true }
             let isSmallAbsValue = absValue < smallValueThreshold
             return isSmallAbsValue && roundSmallToWhole
         }()
-        
+
         let fractionDigitCount = showWholeValue ? 0 : 1
-        self.maximumFractionDigits = fractionDigitCount
-        self.minimumFractionDigits = fractionDigitCount
-        
+        maximumFractionDigits = fractionDigitCount
+        minimumFractionDigits = fractionDigitCount
+
         guard let raw = super.string(from: scaledValue as NSNumber),
               let lastDigitIndex = raw.lastIndex(where: { $0.isNumber })
         else { return nil }
-        
+
         let afterLastDigitIndex = raw.index(after: lastDigitIndex)
         let prefix = raw.prefix(upTo: afterLastDigitIndex)
         let suffix = raw.suffix(from: afterLastDigitIndex)
-        
+
         return "\(prefix)\(scaleSymbol.abbreviation)\(suffix)"
     }
 }
 
 extension NumberCompactor {
-    
     private typealias LOOKUP = (range: Range<Double>, divisor: Double, scale: Scale)
-    
+
     // thresholds
     private static let halfDollar: Double = 0.5
     private static let nickel: Double = 0.05
@@ -89,11 +89,11 @@ extension NumberCompactor {
     static func getThreshold(_ roundSmallToWhole: Bool) -> Double {
         roundSmallToWhole ? NumberCompactor.halfDollar : NumberCompactor.nickel
     }
-    
+
     static func getScaledValue(_ rawValue: Double, _ roundSmallToWhole: Bool) -> (Double, Scale) {
         let threshold = getThreshold(roundSmallToWhole)
         let absValue = abs(rawValue)
-        if !(0.0...threshold).contains(absValue) {
+        if !(0.0 ... threshold).contains(absValue) {
             if let (divisor, scale) = NumberCompactor.lookup(roundSmallToWhole, absValue) {
                 let netValue = rawValue / divisor
                 return (netValue, scale)
@@ -101,21 +101,21 @@ extension NumberCompactor {
         }
         return (0.0, .none)
     }
-    
+
     private static func lookup(_ roundSmallToWhole: Bool, _ absValue: Double) -> (divisor: Double, scale: Scale)? {
         let records = roundSmallToWhole ? NumberCompactor.halfDollarLookup : NumberCompactor.nickelLookup
         guard let record = records.first(where: { $0.range.contains(absValue) }) else { return nil }
         return (record.divisor, record.scale)
     }
-    
+
     private static func generateLookup(threshold: Double) -> [LOOKUP] {
         let netKiloExtent: Double = Scale.kilo.extent - threshold
         let netMegaExtent: Double = Scale.mega.extent - threshold * Scale.kilo.extent
         let netGigaExtent: Double = Scale.giga.extent - threshold * Scale.mega.extent
         let netTeraExtent: Double = Scale.tera.extent - threshold * Scale.giga.extent
         let netPetaExtent: Double = Scale.peta.extent - threshold * Scale.tera.extent
-        let netExaExtent : Double = Scale.exa.extent  - threshold * Scale.peta.extent
-        
+        let netExaExtent: Double = Scale.exa.extent - threshold * Scale.peta.extent
+
         return [
             (threshold ..< netKiloExtent, 1.0, .none),
             (netKiloExtent ..< netMegaExtent, Scale.kilo.extent, .kilo),
@@ -123,8 +123,7 @@ extension NumberCompactor {
             (netGigaExtent ..< netTeraExtent, Scale.giga.extent, .giga),
             (netTeraExtent ..< netPetaExtent, Scale.tera.extent, .tera),
             (netPetaExtent ..< netExaExtent, Scale.peta.extent, .peta),
-            (netExaExtent  ..< Double.greatestFiniteMagnitude, Scale.exa.extent, .exa),
+            (netExaExtent ..< Double.greatestFiniteMagnitude, Scale.exa.extent, .exa),
         ]
     }
 }
-

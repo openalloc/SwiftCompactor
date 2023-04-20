@@ -18,8 +18,8 @@
 
 import Foundation
 
-extension NumberCompactor {
-    public enum Scale: Int, CaseIterable {
+public extension NumberCompactor {
+    enum Scale: Int, CaseIterable {
         case none = 0
         case kilo = 1
         case mega = 2
@@ -27,7 +27,7 @@ extension NumberCompactor {
         case tera = 4
         case peta = 5
         case exa = 6
-        
+
         var extent: Double {
             switch self {
             case .none:
@@ -46,7 +46,7 @@ extension NumberCompactor {
                 return 1_000_000_000_000_000_000
             }
         }
-        
+
         var abbreviation: String {
             switch self {
             case .none:
@@ -67,5 +67,3 @@ extension NumberCompactor {
         }
     }
 }
-
-
